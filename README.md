@@ -62,32 +62,26 @@ def end_to_end(X1, X2, ys, mu1, mu2):
     plt.scatter(from_1[2], from_2[2], label="Class_1")
     plt.scatter(from_1[3], from_2[3], label="Class_0")
     plt.plot([0, 0.95], [0.95, 0], "k--")
-    plt.annotate("Seperating hyperplane", (0.4, 0.55))
+    plt.annotate("Separating line", (0.4, 0.55))
     plt.xlabel(f"$mu1$: {(mu1)}", fontsize=15)
     plt.ylabel(f"$mu2$: {(mu2)}", fontsize=15)
     plt.title("Transformed Inputs: Linearly Seperable", fontsize=15)
     plt.legend()
 
+    # Build A matrix
     A = []
     for i, j in zip(from_1, from_2):
-        temp = []
-        temp.append(i)
-        temp.append(j)
-        temp.append(1)
-        A.append(temp)
+        A.append([i, j, 1])
 
     A = np.array(A)
+
+    # Compute weights using LS solution
     W = np.linalg.inv(A.T.dot(A)).dot(A.T).dot(ys)
     print(np.round(A.dot(W)))
     print(ys)
     print(f"Weights: {W}")
     return W
 
-def predict_matrix(point, weights):
-    gaussian_rbf_0 = gaussian_rbf(point, mu1)
-    gaussian_rbf_1 = gaussian_rbf(point, mu2)
-    A = np.array([gaussian_rbf_0, gaussian_rbf_1, 1])
-    return np.round(A.dot(weights))
 
 # points
 x1 = np.array([0, 0, 1, 1])
@@ -100,11 +94,17 @@ mu2 = np.array([1, 0])
 
 w = end_to_end(x1, x2, ys, mu1, mu2)
 
-# testing
-print(f"Input:{np.array([0, 0])}, Predicted: {predict_matrix(np.array([0, 0]), w)}")
-print(f"Input:{np.array([0, 1])}, Predicted: {predict_matrix(np.array([0, 1]), w)}")
-print(f"Input:{np.array([1, 0])}, Predicted: {predict_matrix(np.array([1, 0]), w)}")
-print(f"Input:{np.array([1, 1])}, Predicted: {predict_matrix(np.array([1, 1]), w)}")
+# ---- DIRECT PREDICTION (NO FUNCTION) ----
+def predict_direct(point, mu1, mu2, weights):
+    g0 = gaussian_rbf(point, mu1)
+    g1 = gaussian_rbf(point, mu2)
+    A = np.array([g0, g1, 1])
+    return np.round(A.dot(weights))
+
+print(f"Input: [0,0], Predicted:", predict_direct(np.array([0,0]), mu1, mu2, w))
+print(f"Input: [0,1], Predicted:", predict_direct(np.array([0,1]), mu1, mu2, w))
+print(f"Input: [1,0], Predicted:", predict_direct(np.array([1,0]), mu1, mu2, w))
+print(f"Input: [1,1], Predicted:", predict_direct(np.array([1,1]), mu1, mu2, w))
 ```
 
 <H3>OUTPUT:</H3>
