@@ -65,17 +65,23 @@ def end_to_end(X1, X2, ys, mu1, mu2):
     plt.annotate("Separating line", (0.4, 0.55))
     plt.xlabel(f"$mu1$: {(mu1)}", fontsize=15)
     plt.ylabel(f"$mu2$: {(mu2)}", fontsize=15)
-    plt.title("Transformed Inputs: Linearly Seperable", fontsize=15)
+    plt.title("Transformed Inputs: Linearly Separable", fontsize=15)
     plt.legend()
 
-    # Build A matrix
+    # ---------------------------
+    # Build A matrix (with temp)
+    # ---------------------------
     A = []
     for i, j in zip(from_1, from_2):
-        A.append([i, j, 1])
+        temp = []        # create empty row
+        temp.append(i)   # RBF output from center mu1
+        temp.append(j)   # RBF output from center mu2
+        temp.append(1)   # bias term
+        A.append(temp)   # add the row to A
 
     A = np.array(A)
 
-    # Compute weights using LS solution
+    # Compute weights using Least Squares
     W = np.linalg.inv(A.T.dot(A)).dot(A.T).dot(ys)
     print(np.round(A.dot(W)))
     print(ys)
@@ -101,10 +107,10 @@ def predict_direct(point, mu1, mu2, weights):
     A = np.array([g0, g1, 1])
     return np.round(A.dot(weights))
 
-print(f"Input: [0,0], Predicted:", predict_direct(np.array([0,0]), mu1, mu2, w))
-print(f"Input: [0,1], Predicted:", predict_direct(np.array([0,1]), mu1, mu2, w))
-print(f"Input: [1,0], Predicted:", predict_direct(np.array([1,0]), mu1, mu2, w))
-print(f"Input: [1,1], Predicted:", predict_direct(np.array([1,1]), mu1, mu2, w))
+print("Input: [0,0], Predicted:", predict_direct(np.array([0,0]), mu1, mu2, w))
+print("Input: [0,1], Predicted:", predict_direct(np.array([0,1]), mu1, mu2, w))
+print("Input: [1,0], Predicted:", predict_direct(np.array([1,0]), mu1, mu2, w))
+print("Input: [1,1], Predicted:", predict_direct(np.array([1,1]), mu1, mu2, w))
 ```
 
 <H3>OUTPUT:</H3>
